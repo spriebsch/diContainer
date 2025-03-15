@@ -74,23 +74,22 @@ abstract readonly class AbstractFactory
         $shortNameMethod = $type->shortNameMethod();
 
         if (method_exists($this, $shortNameMethod)) {
-            $result = $this->$shortNameMethod();
-        } else {
-            $longNameMethod = $type->longNameMethod();
-
-            if (method_exists($this, $longNameMethod)) {
-                $result = $this->$longNameMethod();
-            } else {
-                try {
-                    $result = $this->createInstance($type);
-                } catch (Exception $exception) {
-                    throw ContainerException::exceptionWhileCreating($type->type(), $exception);
-                }
-            }
+            return $this->$shortNameMethod();
         }
 
-        return $result;
+        $longNameMethod = $type->longNameMethod();
+
+        if (method_exists($this, $longNameMethod)) {
+            return $this->$longNameMethod();
+        }
+
+        try {
+            return $this->createInstance($type);
+        } catch (Exception $exception) {
+            throw ContainerException::exceptionWhileCreating($type->type(), $exception);
+        }
     }
+
 
     private function handleVirtualType(Type $type): mixed
     {

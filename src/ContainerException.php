@@ -26,26 +26,7 @@ class ContainerException extends Exception
             ),
         );
     }
-
-    public static function factoryMethodCreatedWrongClass(string $factoryClass, string $class, $object): self
-    {
-        return new self(
-            sprintf(
-                'Factory %s returned %s instead of %s',
-                $factoryClass,
-                $object::class,
-                $class,
-            ),
-        );
-    }
-
-    public static function instanceAlreadyExists(object $instance): self
-    {
-        return new self(
-            sprintf('Instance %s already exists.', $instance::class),
-        );
-    }
-
+    
     public static function virtualTypeDoesNotExist(string $identifier): self
     {
         return new self(sprintf('Virtual type %s does not exist', $identifier));
