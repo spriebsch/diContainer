@@ -47,7 +47,7 @@ class ContainerTest extends TestCase
         $container = new Container(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('Virtual type does-not-exist does not exist');
+        $this->expectExceptionMessage('Factory method for virtual type does-not-exist does not exist');
 
         $container->get('does-not-exist');
     }
@@ -82,6 +82,7 @@ class ContainerTest extends TestCase
         $container->get('TypeThatDoesNotReturnObject');
     }
 
+    /*
     public function test_exception_when_virtual_type_has_parameter(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
@@ -91,6 +92,7 @@ class ContainerTest extends TestCase
 
         $container->get(new Type('virtualType', 'parameter'));
     }
+    */
 
     public function test_creates_class_without_constructor(): void
     {
@@ -161,7 +163,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_creates_virtual_type_when_string_specified(): void
+    public function test_creates_virtual_type(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
@@ -171,23 +173,53 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_creates_virtual_type_when_object_specified(): void
+    public function test_creates_virtual_type_with_parameters(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
-            stdClass::class,
-            $container->get(new Type('virtualType')),
+            TestClassVirtualTypeWithParameter::class,
+            $container->get('virtualTypeWithParameter', 'the-parameter'),
         );
     }
 
-    public function test_manages_single_instance(): void
+    public function test_manages_single_instance_on_types(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
         $this->assertSame(
             $container->get(TestClassWithDependency::class),
             $container->get(TestClassWithDependency::class),
+        );
+    }
+
+    public function test_passes_parameter_to_virtual_type_factory_method(): void
+    {
+        $parameter = 'the-parameter';
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $object = $container->get('virtualTypeWithParameter', $parameter);
+
+        $this->assertSame($parameter, $object->parameter);
+    }
+
+    public function test_manages_single_instance_on_virtual_types(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->assertSame(
+            $container->get('virtualTypeWithParameter', 'the-parameter'),
+            $container->get('virtualTypeWithParameter', 'the-parameter'),
+        );
+    }
+
+    public function test_creates_new_instance_of_virtual_types_for_different_parameters(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->assertNotSame(
+            $container->get('virtualTypeWithParameter', 'the-parameter'),
+            $container->get('virtualTypeWithParameter', 'other-parameter'),
         );
     }
 }

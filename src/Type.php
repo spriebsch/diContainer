@@ -14,7 +14,7 @@ final readonly class Type
         $this->type = $type;
         $this->parameters = $parameters;
 
-        $this->ensureVirtualTypeHasNoParameters();
+        // $this->ensureVirtualTypeHasNoParameters();
     }
 
     public function type(): string

@@ -9,6 +9,7 @@ spl_autoload_register(
             $classes = array(
                 'spriebsch\\dicontainer\\containertest' => '/ContainerTest.php',
                 'spriebsch\\dicontainer\\dependencythathasuntypedconstructorparameter' => '/stubs/DependencyThatHasUntypedConstructorParameter.php',
+                'spriebsch\\dicontainer\\testclassvirtualtypewithparameter' => '/stubs/TestClassVirtualTypeWithParameter.php',
                 'spriebsch\\dicontainer\\testclasswithconfigurationdependency' => '/stubs/TestClassWitthConfigurationDependency.php',
                 'spriebsch\\dicontainer\\testclasswithcontainerdependency' => '/stubs/TestClassWitthContainerDependency.php',
                 'spriebsch\\dicontainer\\testclasswithdependency' => '/stubs/TestClassWithDependency.php',

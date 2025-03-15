@@ -62,7 +62,7 @@ abstract readonly class AbstractFactory
             $dependencies[] = match ($dependency) {
                 Container::class     => $this->container,
                 Configuration::class => $this->configuration,
-                default              => $this->container->get(new Type($dependency))
+                default              => $this->container->get($dependency)
             };
         }
 
