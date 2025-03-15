@@ -24,7 +24,8 @@
   },
   "prefer-stable": true,
   "require": {
-    "php": "^8.4"
+    "php": "^8.4",
+    "ext-sqlite3": "*"
   },
   "scripts": {
     "post-autoload-dump": "@generate-autoloader",

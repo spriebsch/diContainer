@@ -14,7 +14,7 @@ abstract readonly class AbstractFactory
 
     final public function create(Type $type): object
     {
-        if ($this->isVirtualType($type)) {
+        if ($type->isVirtual()) {
             $result = $this->handleVirtualType($type);
         } else {
             $this->ensureTypeExists($type);
@@ -67,19 +67,6 @@ abstract readonly class AbstractFactory
         }
 
         return new $class(...$dependencies);
-    }
-
-    private function isVirtualType(Type $type): bool
-    {
-        if (str_contains($type->type(), '\\')) {
-            return false;
-        }
-
-        if (count($type->parameters()) !== 0) {
-            throw ContainerException::virtualTypeCannotHaveParameters($type->type());
-        }
-
-        return true;
     }
 
     private function handleType(Type $type): mixed

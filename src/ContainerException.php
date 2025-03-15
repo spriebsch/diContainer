@@ -53,7 +53,7 @@ class ContainerException extends Exception
 
     public static function virtualTypeCannotHaveParameters(string $type): self
     {
-        return new self(sprintf('Virtual type %s cannot have parameters'));
+        return new self(sprintf('Virtual type %s cannot have parameters', $type));
     }
 
     public static function typeDoesNotExist(string $class): self

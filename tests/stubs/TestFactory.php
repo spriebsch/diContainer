@@ -2,10 +2,21 @@
 
 namespace spriebsch\diContainer;
 
+use SQLite3;
 use stdClass;
 
 readonly class TestFactory extends AbstractFactory
 {
+    public function TypeThatDoesNotReturnObject()
+    {
+        return 'no-object';
+    }
+
+    public function Sqlite(): SQLite3
+    {
+        return new SQLite3(':memory:');
+    }
+
     public function virtualType(): object
     {
         return new stdClass;
@@ -26,8 +37,4 @@ readonly class TestFactory extends AbstractFactory
         return new \spriebsch\TestClassWithLongNameFactoryMethods('the-value');
     }
 
-    public function TypeThatDoesNotReturnObject()
-    {
-        return 'no-object';
-    }
 }

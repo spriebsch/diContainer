@@ -32,6 +32,66 @@ class ContainerTest extends TestCase
         );
     }
 
+    public function test_exception_when_trying_to_auto_wire_scalar_parameters(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('has scalar type');
+
+        $container->get(TestClassWithScalarConstructorParameters::class);
+    }
+
+    public function test_exception_when_virtual_type_does_not_exist(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Virtual type does-not-exist does not exist');
+
+        $container->get('does-not-exist');
+    }
+
+    public function test_exception_when_type_does_not_exist(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('class\\DoesNotExist does not exist');
+
+        $container->get('class\\DoesNotExist');
+    }
+
+    public function test_exception_when_dependency_has_untyped_constructor_parameter(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('constructor parameter untypedParameter');
+
+        $container->get(TestClassWithDependencyThatHasUntypedConstructorParameter::class);
+    }
+
+    public function test_exception_when_custom_method_returns_no_object(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('does not return object but');
+
+        $container->get('TypeThatDoesNotReturnObject');
+    }
+
+    public function test_exception_when_virtual_type_has_parameter(): void
+    {
+        $container = new Container(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('cannot have parameters');
+
+        $container->get(new Type('virtualType', 'parameter'));
+    }
+
     public function test_creates_class_without_constructor(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
@@ -51,44 +111,34 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_manages_single_instance(): void
+    public function test_creates_class_with_dependencies(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
-        $this->assertSame(
-            $container->get(TestClassWithDependency::class),
+        $this->assertInstanceOf(
+            TestClassWithDependency::class,
             $container->get(TestClassWithDependency::class),
         );
     }
 
-    public function test_exception_when_trying_to_auto_wire_scalar_parameters(): void
+    public function test_creates_class_with_configuration_dependency(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('has scalar type');
-
-        $container->get(TestClassWithScalarConstructorParameters::class);
+        $this->assertInstanceOf(
+            TestClassWithConfigurationDependency::class,
+            $container->get(TestClassWithConfigurationDependency::class),
+        );
     }
 
-    public function test_exception_when_type_does_not_exist(): void
+    public function test_creates_class_with_container_dependency(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('Virtual type does-not-exist does not exist');
-
-        $container->get('does-not-exist');
-    }
-
-    public function test_exception_when_custom_method_returns_no_object(): void
-    {
-        $container = new Container(new TestConfiguration, TestFactory::class);
-
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('does not return object but');
-
-        $container->get('TypeThatDoesNotReturnObject');
+        $this->assertInstanceOf(
+            TestClassWithContainerDependency::class,
+            $container->get(TestClassWithContainerDependency::class),
+        );
     }
 
     public function test_creates_type_with_short_name_method(): void
@@ -111,7 +161,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_creates_virtual_type_as_string(): void
+    public function test_creates_virtual_type_when_string_specified(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
@@ -121,7 +171,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_creates_virtual_type(): void
+    public function test_creates_virtual_type_when_object_specified(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
@@ -131,13 +181,13 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_exception_when_dependency_has_untyped_constructor_parameter(): void
+    public function test_manages_single_instance(): void
     {
         $container = new Container(new TestConfiguration, TestFactory::class);
 
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('constructor parameter untypedParameter');
-
-        $container->get(TestClassWithDependencyThatHasUntypedConstructorParameter::class);
+        $this->assertSame(
+            $container->get(TestClassWithDependency::class),
+            $container->get(TestClassWithDependency::class),
+        );
     }
 }
