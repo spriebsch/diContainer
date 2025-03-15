@@ -13,8 +13,6 @@ final readonly class Type
     {
         $this->type = $type;
         $this->parameters = $parameters;
-
-        // $this->ensureVirtualTypeHasNoParameters();
     }
 
     public function type(): string
@@ -25,6 +23,11 @@ final readonly class Type
     public function parameters(): array
     {
         return $this->parameters;
+    }
+
+    public function serialize(): string
+    {
+        return serialize($this);
     }
 
     public function exists(): bool
@@ -45,16 +48,5 @@ final readonly class Type
     public function longNameMethod(): string
     {
         return str_replace('\\', '_', $this->type());
-    }
-
-    private function ensureVirtualTypeHasNoParameters(): void
-    {
-        if (!$this->isVirtual()) {
-            return;
-        }
-
-        if (count($this->parameters()) !== 0) {
-            throw ContainerException::virtualTypeCannotHaveParameters($this->type());
-        }
     }
 }

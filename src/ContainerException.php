@@ -32,11 +32,6 @@ class ContainerException extends Exception
         return new self(sprintf('Factory method for virtual type %s does not exist', $identifier));
     }
 
-    public static function virtualTypeCannotHaveParameters(string $type): self
-    {
-        return new self(sprintf('Virtual type %s cannot have parameters', $type));
-    }
-
     public static function typeDoesNotExist(string $class): self
     {
         return new self(sprintf('Type (class or interface) %s does not exist', $class));

@@ -7,7 +7,6 @@ use WeakMap;
 final class Container
 {
     public readonly AbstractFactory $factory;
-    private WeakMap $virtualInstances;
     private array $instances = [];
 
     final public function __construct(
@@ -26,12 +25,11 @@ final class Container
         $factory = new $this->factoryClass($this->configuration, $this);
 
         $this->factory = $factory;
-        $this->virtualInstances = new WeakMap;
     }
 
     final public function has(Type $type): bool
     {
-        return isset($this->virtualInstances[$type]);
+        return isset($this->instances[$type->serialize()]);
     }
 
     final public function get(string $type, mixed ...$parameters): object
@@ -42,11 +40,11 @@ final class Container
             $this->add($type, $this->factory->create($type));
         }
 
-        return $this->virtualInstances[$type];
+        return $this->instances[$type->serialize()];
     }
 
     private function add(Type $type, object $instance): void
     {
-        $this->virtualInstances[$type] = $instance;
+        $this->instances[$type->serialize()] = $instance;
     }
 }
