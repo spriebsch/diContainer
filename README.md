@@ -1,6 +1,6 @@
 # DI Container
 
-A lightweight, smart and fast DI container.
+A lightweight, smart and fast DI container with auto-wiring.
 
 Copyright (c) 2025, Stefan Priebsch <stefan@priebsch.de>
 
