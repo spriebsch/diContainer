@@ -40,10 +40,6 @@ abstract readonly class AbstractFactory
             return $this->$longNameMethod();
         }
 
-        if (!interface_exists($type->type())) {
-            throw AutoWireException::isInterface($type->type());
-        }
-
         try {
             return $this->createInstance($type);
         } catch (Exception $exception) {
@@ -54,6 +50,10 @@ abstract readonly class AbstractFactory
     private function createInstance(Type $type): object
     {
         $class = $type->type();
+
+        if (!interface_exists($class)) {
+            throw AutoWireException::isInterface($class);
+        }
 
         $reflectionClass = new ReflectionClass($class);
         $constructor = $reflectionClass->getConstructor();
