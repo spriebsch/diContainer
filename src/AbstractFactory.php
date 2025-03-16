@@ -26,6 +26,27 @@ abstract readonly class AbstractFactory
         return $result;
     }
 
+    private function handleType(Type $type): mixed
+    {
+        $shortNameMethod = $type->shortNameMethod();
+
+        if (method_exists($this, $shortNameMethod)) {
+            return $this->$shortNameMethod();
+        }
+
+        $longNameMethod = $type->longNameMethod();
+
+        if (method_exists($this, $longNameMethod)) {
+            return $this->$longNameMethod();
+        }
+
+        try {
+            return $this->createInstance($type);
+        } catch (Exception $exception) {
+            throw ContainerException::exceptionWhileCreating($type->type(), $exception);
+        }
+    }
+
     private function createInstance(Type $type): object
     {
         $class = $type->type();
@@ -33,13 +54,13 @@ abstract readonly class AbstractFactory
         $reflectionClass = new ReflectionClass($class);
         $constructor = $reflectionClass->getConstructor();
 
-        if (!$constructor) {
+        if (!interface_exists($class) && !$constructor) {
             return new $class;
         }
 
         $parameters = $constructor->getParameters();
 
-        if (count($parameters) === 0) {
+        if (!interface_exists($class) && count($parameters) === 0) {
             return new $class;
         }
 
@@ -68,28 +89,6 @@ abstract readonly class AbstractFactory
 
         return new $class(...$dependencies);
     }
-
-    private function handleType(Type $type): mixed
-    {
-        $shortNameMethod = $type->shortNameMethod();
-
-        if (method_exists($this, $shortNameMethod)) {
-            return $this->$shortNameMethod();
-        }
-
-        $longNameMethod = $type->longNameMethod();
-
-        if (method_exists($this, $longNameMethod)) {
-            return $this->$longNameMethod();
-        }
-
-        try {
-            return $this->createInstance($type);
-        } catch (Exception $exception) {
-            throw ContainerException::exceptionWhileCreating($type->type(), $exception);
-        }
-    }
-
 
     private function handleVirtualType(Type $type): mixed
     {
