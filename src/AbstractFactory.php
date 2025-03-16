@@ -51,19 +51,17 @@ abstract readonly class AbstractFactory
     {
         $class = $type->type();
 
-        if (!interface_exists($class)) {
-            $reflectionClass = new ReflectionClass($class);
-            $constructor = $reflectionClass->getConstructor();
+        $reflectionClass = new ReflectionClass($class);
+        $constructor = $reflectionClass->getConstructor();
 
-            if (!$constructor) {
-                return new $class;
-            }
+        if (!interface_exists($class) && !$constructor) {
+            return new $class;
+        }
 
-            $parameters = $constructor->getParameters();
+        $parameters = $constructor->getParameters();
 
-            if (count($parameters) === 0) {
-                return new $class;
-            }
+        if (!interface_exists($class) && count($parameters) === 0) {
+            return new $class;
         }
 
         $dependencies = [];
