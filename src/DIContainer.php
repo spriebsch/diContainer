@@ -25,11 +25,6 @@ final class DIContainer implements Container
         $this->factory = $factory;
     }
 
-    final public function has(Type $type): bool
-    {
-        return isset($this->instances[$type->serialize()]);
-    }
-
     final public function get(string $type, mixed ...$parameters): object
     {
         $type = new Type($type, ...$parameters);
@@ -39,6 +34,11 @@ final class DIContainer implements Container
         }
 
         return $this->instances[$type->serialize()];
+    }
+
+    private function has(Type $type): bool
+    {
+        return isset($this->instances[$type->serialize()]);
     }
 
     private function add(Type $type, object $instance): void

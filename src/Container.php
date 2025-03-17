@@ -4,7 +4,5 @@ namespace spriebsch\diContainer;
 
 interface Container
 {
-    public function has(Type $type): bool;
-
     public function get(string $type, mixed ...$parameters): object;
 }
