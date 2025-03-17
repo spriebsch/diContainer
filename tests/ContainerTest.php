@@ -222,4 +222,36 @@ class ContainerTest extends TestCase
             $container->get('virtualTypeWithParameter', 'other-parameter'),
         );
     }
+
+    public function test_can_be_wrapped(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $wrapper = new class($container) implements Container {
+            private Container $wrapper;
+
+            public function __construct(private readonly Container $container) {}
+
+            public function get(string $type, ...$parameters): object
+            {
+                if (isset($this->wrapper)) {
+                    return $this->wrapper->get($type, ...$parameters);
+                }
+
+                return $this->container->delegateGet($this, $type, ...$parameters);
+            }
+
+            public function delegateGet(Container $wrapper, string $type, ...$parameters): object
+            {
+                $this->wrapper = $wrapper;
+
+                return $this->container->delegateGet($this, $type, ...$parameters);
+            }
+        };
+
+        $this->assertInstanceOf(
+            TestClassWithDependency::class,
+            $wrapper->get(TestClassWithDependency::class),
+        );
+    }
 }
