@@ -36,7 +36,28 @@ abstract readonly class AbstractFactory
         return $this->configuration;
     }
 
-    private function createInstance(Type $type): object
+    private function handleType(Type $type): mixed
+    {
+        $shortNameMethod = $type->shortNameMethod();
+
+        if (method_exists($this, $shortNameMethod)) {
+            return $this->$shortNameMethod(...$type->parameters());
+        }
+
+        $longNameMethod = $type->longNameMethod();
+
+        if (method_exists($this, $longNameMethod)) {
+            return $this->$longNameMethod(...$type->parameters());
+        }
+
+        try {
+            return $this->autoWireInstance($type);
+        } catch (Exception $exception) {
+            throw ContainerException::exceptionWhileCreating($type->type(), $exception);
+        }
+    }
+
+    private function autoWireInstance(Type $type): object
     {
         $class = $type->type();
 
@@ -74,28 +95,6 @@ abstract readonly class AbstractFactory
 
         return new $class(...$dependencies);
     }
-
-    private function handleType(Type $type): mixed
-    {
-        $shortNameMethod = $type->shortNameMethod();
-
-        if (method_exists($this, $shortNameMethod)) {
-            return $this->$shortNameMethod();
-        }
-
-        $longNameMethod = $type->longNameMethod();
-
-        if (method_exists($this, $longNameMethod)) {
-            return $this->$longNameMethod();
-        }
-
-        try {
-            return $this->createInstance($type);
-        } catch (Exception $exception) {
-            throw ContainerException::exceptionWhileCreating($type->type(), $exception);
-        }
-    }
-
 
     private function handleVirtualType(Type $type): mixed
     {

@@ -12,6 +12,19 @@ readonly class TestFactory extends AbstractFactory
         return 'no-object';
     }
 
+    public function TestClassWithScalarConstructorParametersAndShortMethod(
+        string $string,
+        int $int,
+        array $array
+    ): TestClassWithScalarConstructorParametersAndShortMethod
+    {
+        return new TestClassWithScalarConstructorParametersAndShortMethod(
+            $string,
+            $int,
+            $array
+        );
+    }
+
     public function Sqlite(): SQLite3
     {
         return new SQLite3(':memory:');

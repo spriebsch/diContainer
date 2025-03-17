@@ -153,6 +153,21 @@ class ContainerTest extends TestCase
         );
     }
 
+    public function test_passes_arguments_to_constructor(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $this->assertInstanceOf(
+            TestClassWithScalarConstructorParametersAndShortMethod::class,
+            $container->get(
+                TestClassWithScalarConstructorParametersAndShortMethod::class,
+                'the-argument',
+                42,
+                []
+            ),
+        );
+    }
+
     public function test_creates_type_with_long_name_methods(): void
     {
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
