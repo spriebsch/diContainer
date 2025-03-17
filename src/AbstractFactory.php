@@ -18,7 +18,7 @@ abstract readonly class AbstractFactory
             $result = $this->handleVirtualType($type);
         } else {
             $this->ensureTypeExists($type);
-            $result = $this->handleType($type);
+            $result = $this->handleRegularType($type);
         }
 
         $this->ensureIsObject($type->type(), $result);
@@ -36,28 +36,28 @@ abstract readonly class AbstractFactory
         return $this->configuration;
     }
 
-    private function handleType(Type $type): mixed
+    private function handleRegularType(Type $type): mixed
     {
-        $shortNameMethod = $type->shortNameMethod();
-
-        if (method_exists($this, $shortNameMethod)) {
-            return $this->$shortNameMethod(...$type->parameters());
-        }
-
-        $longNameMethod = $type->longNameMethod();
-
-        if (method_exists($this, $longNameMethod)) {
-            return $this->$longNameMethod(...$type->parameters());
-        }
-
         try {
-            return $this->autoWireInstance($type);
+            $shortNameMethod = $type->shortNameMethod();
+
+            if (method_exists($this, $shortNameMethod)) {
+                return $this->$shortNameMethod(...$type->parameters());
+            }
+
+            $longNameMethod = $type->longNameMethod();
+
+            if (method_exists($this, $longNameMethod)) {
+                return $this->$longNameMethod(...$type->parameters());
+            }
+
+            return $this->autoWire($type);
         } catch (Exception $exception) {
             throw ContainerException::exceptionWhileCreating($type->type(), $exception);
         }
     }
 
-    private function autoWireInstance(Type $type): object
+    private function autoWire(Type $type): object
     {
         $class = $type->type();
 
@@ -102,11 +102,15 @@ abstract readonly class AbstractFactory
             throw ContainerException::virtualTypeDoesNotExist($type->type());
         }
 
-        $method = $type->type();
+        try {
+            $method = $type->type();
 
-        $result = $this->$method(...$type->parameters());
+            $result = $this->$method(...$type->parameters());
 
-        return $result;
+            return $result;
+        } catch (Exception $exception) {
+            throw ContainerException::exceptionWhileCreating($type->type(), $exception);
+        }
     }
 
     private function ensureIsObject(string $type, mixed $thing): void

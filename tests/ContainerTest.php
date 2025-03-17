@@ -82,18 +82,6 @@ class ContainerTest extends TestCase
         $container->get('TypeThatDoesNotReturnObject');
     }
 
-    /*
-    public function test_exception_when_virtual_type_has_parameter(): void
-    {
-        $container = new Container(new TestConfiguration, TestFactory::class);
-
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('cannot have parameters');
-
-        $container->get(new Type('virtualType', 'parameter'));
-    }
-    */
-
     public function test_creates_class_without_constructor(): void
     {
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
@@ -153,7 +141,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_passes_arguments_to_constructor(): void
+    public function test_passes_type_argument_to_constructor(): void
     {
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
@@ -161,10 +149,25 @@ class ContainerTest extends TestCase
             TestClassWithScalarConstructorParametersAndShortMethod::class,
             $container->get(
                 TestClassWithScalarConstructorParametersAndShortMethod::class,
-                'the-argument',
+                'the-string',
                 42,
-                []
+                [],
             ),
+        );
+    }
+
+    public function test_passes_virtual_type_argument_to_constructor(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $instance = $container->get(
+            'virtualTypeWithParameter',
+            'the-string',
+        );
+
+        $this->assertInstanceOf(
+            TestClassVirtualTypeWithParameter::class,
+            $instance,
         );
     }
 
