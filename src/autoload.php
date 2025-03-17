@@ -12,6 +12,7 @@ spl_autoload_register(
                 'spriebsch\\dicontainer\\configuration' => '/Configuration.php',
                 'spriebsch\\dicontainer\\container' => '/Container.php',
                 'spriebsch\\dicontainer\\containerexception' => '/ContainerException.php',
+                'spriebsch\\dicontainer\\dicontainer' => '/DIContainer.php',
                 'spriebsch\\dicontainer\\type' => '/Type.php'
             );
         }

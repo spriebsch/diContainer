@@ -9,7 +9,7 @@ abstract readonly class AbstractFactory
 {
     final public function __construct(
         protected Configuration $configuration,
-        protected Container     $container,
+        protected DIContainer   $container,
     ) {}
 
     final public function create(Type $type): object
@@ -24,6 +24,16 @@ abstract readonly class AbstractFactory
         $this->ensureIsObject($type->type(), $result);
 
         return $result;
+    }
+
+    final public function Container(): Container
+    {
+        return $this->container;
+    }
+
+    final public function Configuration(): Configuration
+    {
+        return $this->configuration;
     }
 
     private function createInstance(Type $type): object
@@ -59,11 +69,7 @@ abstract readonly class AbstractFactory
 
             $dependency = (new ReflectionClass($parameterType->getName()))->getName();
 
-            $dependencies[] = match ($dependency) {
-                Container::class     => $this->container,
-                Configuration::class => $this->configuration,
-                default              => $this->container->get($dependency)
-            };
+            $dependencies[] = $this->container->get($dependency);
         }
 
         return new $class(...$dependencies);

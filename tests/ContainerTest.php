@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-#[CoversClass(Container::class)]
+#[CoversClass(DIContainer::class)]
 #[CoversClass(AbstractFactory::class)]
 #[CoversClass(Type::class)]
 #[CoversClass(ContainerException::class)]
@@ -18,7 +18,7 @@ class ContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Factory class does-not-exist does not exist');
 
-        new Container(new TestConfiguration, 'does-not-exist');
+        new DIContainer(new TestConfiguration, 'does-not-exist');
     }
 
     public function test_exception_when_factory_class_does_not_extend_abstract_factory(): void
@@ -26,7 +26,7 @@ class ContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('is no instance of');
 
-        new Container(
+        new DIContainer(
             new TestConfiguration,
             TestFactoryThatDoesNotExtendAbstractFactory::class,
         );
@@ -34,7 +34,7 @@ class ContainerTest extends TestCase
 
     public function test_exception_when_trying_to_auto_wire_scalar_parameters(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('has scalar type');
@@ -44,7 +44,7 @@ class ContainerTest extends TestCase
 
     public function test_exception_when_virtual_type_does_not_exist(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Factory method for virtual type does-not-exist does not exist');
@@ -54,7 +54,7 @@ class ContainerTest extends TestCase
 
     public function test_exception_when_type_does_not_exist(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('class\\DoesNotExist does not exist');
@@ -64,7 +64,7 @@ class ContainerTest extends TestCase
 
     public function test_exception_when_dependency_has_untyped_constructor_parameter(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('constructor parameter untypedParameter');
@@ -74,7 +74,7 @@ class ContainerTest extends TestCase
 
     public function test_exception_when_custom_method_returns_no_object(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('does not return object but');
@@ -96,7 +96,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_class_without_constructor(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $instance = $container->get(TestClassWithoutConstructor::class);
 
@@ -105,7 +105,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_class_without_constructor_parameters(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassWithoutConstructorParameters::class,
@@ -115,7 +115,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_class_with_dependencies(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassWithDependency::class,
@@ -125,7 +125,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_class_with_configuration_dependency(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassWithConfigurationDependency::class,
@@ -135,7 +135,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_class_with_container_dependency(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassWithContainerDependency::class,
@@ -145,7 +145,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_type_with_short_name_method(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassWithShortNameFactoryMethod::class,
@@ -155,7 +155,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_type_with_long_name_methods(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassWithLongNameFactoryMethods::class,
@@ -165,7 +165,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_virtual_type(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             stdClass::class,
@@ -175,7 +175,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_virtual_type_with_parameters(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertInstanceOf(
             TestClassVirtualTypeWithParameter::class,
@@ -185,7 +185,7 @@ class ContainerTest extends TestCase
 
     public function test_manages_single_instance_on_types(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertSame(
             $container->get(TestClassWithDependency::class),
@@ -196,7 +196,7 @@ class ContainerTest extends TestCase
     public function test_passes_parameter_to_virtual_type_factory_method(): void
     {
         $parameter = 'the-parameter';
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $object = $container->get('virtualTypeWithParameter', $parameter);
 
@@ -205,7 +205,7 @@ class ContainerTest extends TestCase
 
     public function test_manages_single_instance_on_virtual_types(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertSame(
             $container->get('virtualTypeWithParameter', 'the-parameter'),
@@ -215,7 +215,7 @@ class ContainerTest extends TestCase
 
     public function test_creates_new_instance_of_virtual_types_for_different_parameters(): void
     {
-        $container = new Container(new TestConfiguration, TestFactory::class);
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->assertNotSame(
             $container->get('virtualTypeWithParameter', 'the-parameter'),
