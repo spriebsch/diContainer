@@ -2,7 +2,7 @@
 
 namespace spriebsch\diContainer;
 
-class TestClassWithShortNameFactoryMethod
+class DelegateTestClassWithShortNameFactoryMethod
 {
     public function __construct(public readonly string $scalarParameter) {}
 }

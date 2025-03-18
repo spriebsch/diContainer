@@ -40,7 +40,7 @@ readonly class TestFactory extends AbstractFactory
         return new TestClassVirtualTypeWithParameter($parameter);
     }
 
-    public function TestClassWithShortNameFactoryMethod(): TestClassWithShortNameFactoryMethod
+    public function TestClassWithShortNameFactoryMethod(string $parameter): TestClassWithShortNameFactoryMethod
     {
         return new TestClassWithShortNameFactoryMethod('the-value');
     }

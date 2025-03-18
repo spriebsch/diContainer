@@ -8,12 +8,22 @@ use ReflectionClass;
 abstract readonly class AbstractFactory
 {
     final public function __construct(
-        protected Configuration $configuration,
-        protected DIContainer   $container,
+        protected Configuration    $configuration,
+        protected DIContainer      $container,
+        protected ?AbstractFactory $factory = null,
     ) {}
+
+    final public function canCreate(Type $type): bool
+    {
+        return $this->canHandleVirtualType($type) || $this->canHandleRegularType($type);
+    }
 
     final public function create(Type $type): object
     {
+        if (!$this->canCreate($type) && $this->factory !== null) {
+            return $this->factory->create($type);
+        }
+
         if ($type->isVirtual()) {
             $result = $this->handleVirtualType($type);
         } else {
@@ -36,20 +46,34 @@ abstract readonly class AbstractFactory
         return $this->configuration;
     }
 
+    private function canHandleRegularType(Type $type): bool
+    {
+        $shortNameMethod = $type->shortNameMethod();
+        $longNameMethod = $type->longNameMethod();
+
+        if ($shortNameMethod === null || $longNameMethod === null) {
+            return false;
+        }
+
+        return method_exists($this, $shortNameMethod) || method_exists($this, $longNameMethod);
+    }
+
     private function handleRegularType(Type $type): mixed
     {
         try {
             $shortNameMethod = $type->shortNameMethod();
 
-            if (method_exists($this, $shortNameMethod)) {
+            if ($shortNameMethod !== null && method_exists($this, $shortNameMethod)) {
                 $this->ensureParameterCountMatches($shortNameMethod, $type);
+
                 return $this->$shortNameMethod(...$type->parameters());
             }
 
             $longNameMethod = $type->longNameMethod();
 
-            if (method_exists($this, $longNameMethod)) {
+            if ($longNameMethod !== null && method_exists($this, $longNameMethod)) {
                 $this->ensureParameterCountMatches($longNameMethod, $type);
+
                 return $this->$longNameMethod(...$type->parameters());
             }
 
@@ -96,6 +120,11 @@ abstract readonly class AbstractFactory
         }
 
         return new $class(...$dependencies);
+    }
+
+    private function canHandleVirtualType(Type $type): bool
+    {
+        return method_exists($this, $type->type());
     }
 
     private function handleVirtualType(Type $type): mixed

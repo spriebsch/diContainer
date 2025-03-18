@@ -6,32 +6,29 @@ final class DIContainer implements Container
 {
     public readonly AbstractFactory $factory;
     private array $instances = [];
-    private Container $wrapper;
 
-    final public function __construct(
-        public readonly Configuration $configuration,
-        public readonly string        $factoryClass,
-    )
+    final public function __construct(Configuration $configuration, string ...$factoryClasses)
     {
-        if (!class_exists($factoryClass, true)) {
-            throw ContainerException::factoryClassDoesNotExist($factoryClass);
-        }
+        $previous = null;
 
-        if (!is_subclass_of($factoryClass, AbstractFactory::class)) {
-            throw ContainerException::factoryIsNoInstanceOfAbstractFactory($this->factoryClass);
-        }
+        foreach (array_reverse($factoryClasses) as $factoryClass) {
+            if (!class_exists($factoryClass, true)) {
+                throw ContainerException::factoryClassDoesNotExist($factoryClass);
+            }
 
-        $factory = new $this->factoryClass($this->configuration, $this);
+            if (!is_subclass_of($factoryClass, AbstractFactory::class)) {
+                throw ContainerException::factoryIsNoInstanceOfAbstractFactory($factoryClass);
+            }
+
+            $factory = new $factoryClass($configuration, $this, $previous);
+            $previous = $factory;
+        }
 
         $this->factory = $factory;
     }
 
     final public function get(string $type, mixed ...$parameters): object
     {
-        if (isset($this->wrapper)) {
-            return $this->wrapper->get($type, ...$parameters);
-        }
-
         $type = new Type($type, ...$parameters);
 
         if (!$this->has($type)) {
@@ -39,13 +36,6 @@ final class DIContainer implements Container
         }
 
         return $this->instances[$type->serialize()];
-    }
-
-    final public function delegateGet(Container $wrapper, string $type, mixed ...$parameters): object
-    {
-        $this->wrapper = $wrapper;
-
-        return $this->doGet($type, ...$parameters);
     }
 
     private function has(Type $type): bool
@@ -56,16 +46,5 @@ final class DIContainer implements Container
     private function add(Type $type, object $instance): void
     {
         $this->instances[$type->serialize()] = $instance;
-    }
-
-    private function doGet(string $type, mixed ...$parameters): object
-    {
-        $type = new Type($type, ...$parameters);
-
-        if (!$this->has($type)) {
-            $this->add($type, $this->factory->create($type));
-        }
-
-        return $this->instances[$type->serialize()];
     }
 }

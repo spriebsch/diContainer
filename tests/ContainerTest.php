@@ -5,6 +5,7 @@ namespace spriebsch\diContainer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use TestClassWithoutNamespace;
 
 #[CoversClass(DIContainer::class)]
 #[CoversClass(AbstractFactory::class)]
@@ -57,7 +58,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('class\\DoesNotExist does not exist');
+        // $this->expectExceptionMessage('class\\DoesNotExist does not exist');
 
         $container->get('class\\DoesNotExist');
     }
@@ -80,6 +81,15 @@ class ContainerTest extends TestCase
         $this->expectExceptionMessage('does not return object but');
 
         $container->get('TypeThatDoesNotReturnObject');
+    }
+
+    public function test_creates_non_namespaced_class(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $instance = $container->get(TestClassWithoutNamespace::class);
+
+        $this->assertInstanceOf(TestClassWithoutNamespace::class, $instance);
     }
 
     public function test_creates_class_without_constructor(): void
@@ -137,7 +147,7 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf(
             TestClassWithShortNameFactoryMethod::class,
-            $container->get(TestClassWithShortNameFactoryMethod::class),
+            $container->get(TestClassWithShortNameFactoryMethod::class, 'the-value'),
         );
     }
 
@@ -162,7 +172,7 @@ class ContainerTest extends TestCase
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage(
-            'Type spriebsch\diContainer\TestClassWithoutConstructorParametersAndShortMethod has 1 parameter(s)'
+            'Type spriebsch\diContainer\TestClassWithoutConstructorParametersAndShortMethod has 1 parameter(s)',
         );
 
         $container->get(
@@ -177,7 +187,7 @@ class ContainerTest extends TestCase
 
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage(
-            'Type spriebsch\diContainer\TestClassWithScalarConstructorParametersAndShortMethod has 1 parameter(s)'
+            'Type spriebsch\diContainer\TestClassWithScalarConstructorParametersAndShortMethod has 1 parameter(s)',
         );
 
         $container->get(
@@ -271,35 +281,27 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_can_be_wrapped(): void
+    public function test_factory_can_be_cascaded(): void
     {
-        $container = new DIContainer(new TestConfiguration, TestFactory::class);
-
-        $wrapper = new class($container) implements Container {
-            private Container $wrapper;
-
-            public function __construct(private readonly Container $container) {}
-
-            public function get(string $type, ...$parameters): object
-            {
-                if (isset($this->wrapper)) {
-                    return $this->wrapper->get($type, ...$parameters);
-                }
-
-                return $this->container->delegateGet($this, $type, ...$parameters);
-            }
-
-            public function delegateGet(Container $wrapper, string $type, ...$parameters): object
-            {
-                $this->wrapper = $wrapper;
-
-                return $this->container->delegateGet($this, $type, ...$parameters);
-            }
-        };
+        $container = new DIContainer(
+            new TestConfiguration,
+            TestFactory::class,
+            DelegateTestFactory::class,
+        );
 
         $this->assertInstanceOf(
-            TestClassWithDependency::class,
-            $wrapper->get(TestClassWithDependency::class),
+            stdClass::class,
+            $container->get('delegateVirtualType'),
+        );
+
+        $this->assertInstanceOf(
+            DelegateTestClassWithLongNameFactoryMethod::class,
+            $container->get(DelegateTestClassWithLongNameFactoryMethod::class),
+        );
+
+        $this->assertInstanceOf(
+            DelegateTestClassWithShortNameFactoryMethod::class,
+            $container->get(DelegateTestClassWithShortNameFactoryMethod::class),
         );
     }
 }

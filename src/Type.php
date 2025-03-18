@@ -37,16 +37,24 @@ final readonly class Type
 
     public function isVirtual(): bool
     {
-        return !str_contains($this->type(), '\\');
+        return !$this->exists();
     }
 
-    public function shortNameMethod(): string
+    public function shortNameMethod(): ?string
     {
+        if ($this->isVirtual()) {
+            return null;
+        }
+
         return new ReflectionClass($this->type())->getShortName();
     }
 
-    public function longNameMethod(): string
+    public function longNameMethod(): ?string
     {
+        if ($this->isVirtual()) {
+            return null;
+        }
+
         return str_replace('\\', '_', $this->type());
     }
 }

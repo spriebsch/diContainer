@@ -8,6 +8,9 @@ spl_autoload_register(
         if ($classes === null) {
             $classes = array(
                 'spriebsch\\dicontainer\\containertest' => '/ContainerTest.php',
+                'spriebsch\\dicontainer\\delegatetestclasswithlongnamefactorymethod' => '/stubs/DelegateTestClassWithLongNameFactoryMethod.php',
+                'spriebsch\\dicontainer\\delegatetestclasswithshortnamefactorymethod' => '/stubs/DelegateTestClassWithShortNameFactoryMethod.php',
+                'spriebsch\\dicontainer\\delegatetestfactory' => '/stubs/DelegateTestFactory.php',
                 'spriebsch\\dicontainer\\dependencythathasuntypedconstructorparameter' => '/stubs/DependencyThatHasUntypedConstructorParameter.php',
                 'spriebsch\\dicontainer\\testclassvirtualtypewithparameter' => '/stubs/TestClassVirtualTypeWithParameter.php',
                 'spriebsch\\dicontainer\\testclasswithconfigurationdependency' => '/stubs/TestClassWitthConfigurationDependency.php',
@@ -27,7 +30,8 @@ spl_autoload_register(
                 'spriebsch\\dicontainer\\testdependencyofdependency' => '/stubs/TestDependencyOfDependency.php',
                 'spriebsch\\dicontainer\\testfactory' => '/stubs/TestFactory.php',
                 'spriebsch\\dicontainer\\testfactorythatdoesnotextendabstractfactory' => '/stubs/TestFactoryThatDoesNotExtendAbstractFactory.php',
-                'spriebsch\\testclasswithlongnamefactorymethods' => '/stubs/_TestClassWithLongNameFactoryMethods.php'
+                'spriebsch\\testclasswithlongnamefactorymethods' => '/stubs/_TestClassWithLongNameFactoryMethods.php',
+                'testclasswithoutnamespace' => '/stubs/TestClassWithoutNamespace.php'
             );
         }
         $cn = strtolower($class);
