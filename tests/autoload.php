@@ -18,6 +18,7 @@ spl_autoload_register(
                 'spriebsch\\dicontainer\\testclasswithmultipledependecies' => '/stubs/TestClassWithMultipleDependecies.php',
                 'spriebsch\\dicontainer\\testclasswithoutconstructor' => '/stubs/TestClassWithoutConstructor.php',
                 'spriebsch\\dicontainer\\testclasswithoutconstructorparameters' => '/stubs/TestClassWithoutConstructorParameters.php',
+                'spriebsch\\dicontainer\\testclasswithoutconstructorparametersandshortmethod' => '/stubs/TestClassWithoutConstructorParametersAndShortMethod.php',
                 'spriebsch\\dicontainer\\testclasswithscalarconstructorparameters' => '/stubs/TestClassWithScalarConstructorParameters.php',
                 'spriebsch\\dicontainer\\testclasswithscalarconstructorparametersandshortmethod' => '/stubs/TestClassWithScalarConstructorParametersAndShortMethod.php',
                 'spriebsch\\dicontainer\\testclasswithshortnamefactorymethod' => '/stubs/TestClassWithShortNameFactoryMethod.php',

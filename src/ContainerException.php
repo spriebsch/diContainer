@@ -3,6 +3,7 @@
 namespace spriebsch\diContainer;
 
 use Exception;
+use ReflectionMethod;
 
 class ContainerException extends Exception
 {
@@ -39,7 +40,15 @@ class ContainerException extends Exception
 
     public static function exceptionWhileCreating(string $class, Exception $exception): self
     {
-        return new self(sprintf('Exception %s while creating %s', $exception->getMessage(), $class));
+        return new self(
+            sprintf(
+                'Exception "%s" while creating %s',
+                $exception->getMessage(),
+                $class
+            ),
+            0,
+            $exception
+        );
     }
 
     public static function factoryMethodDidNotReturnObject(string $method, mixed $result): self
@@ -49,6 +58,19 @@ class ContainerException extends Exception
                 'Factory method %s does not return object but %s',
                 $method,
                 gettype($result),
+            ),
+        );
+    }
+
+    public static function numberOfArgumentsMismatch(Type $type, ReflectionMethod $method, array $parameters): self
+    {
+        return new self(
+            sprintf(
+                'Type %s has %s parameter(s), method %s expects %s',
+                $type->type(),
+                count($type->parameters()),
+                $method->getName(),
+                count($method->getParameters())
             ),
         );
     }

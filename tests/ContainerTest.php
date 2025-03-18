@@ -156,6 +156,36 @@ class ContainerTest extends TestCase
         );
     }
 
+    public function test_exception_when_passing_arguments_to_constructor_without_arguments(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage(
+            'Type spriebsch\diContainer\TestClassWithoutConstructorParametersAndShortMethod has 1 parameter(s)'
+        );
+
+        $container->get(
+            TestClassWithoutConstructorParametersAndShortMethod::class,
+            'method-does-not-have-parameters',
+        );
+    }
+
+    public function test_exception_when_passing_not_enough_arguments(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage(
+            'Type spriebsch\diContainer\TestClassWithScalarConstructorParametersAndShortMethod has 1 parameter(s)'
+        );
+
+        $container->get(
+            TestClassWithScalarConstructorParametersAndShortMethod::class,
+            'just-one-argument',
+        );
+    }
+
     public function test_passes_virtual_type_argument_to_constructor(): void
     {
         $container = new DIContainer(new TestConfiguration, TestFactory::class);

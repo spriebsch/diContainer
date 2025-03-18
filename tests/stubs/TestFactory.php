@@ -45,6 +45,11 @@ readonly class TestFactory extends AbstractFactory
         return new TestClassWithShortNameFactoryMethod('the-value');
     }
 
+    public function TestClassWithoutConstructorParametersAndShortMethod(): TestClassWithoutConstructorParametersAndShortMethod
+    {
+        return new TestClassWithoutConstructorParametersAndShortMethod;
+    }
+
     public function spriebsch_diContainer_TestClassWithLongNameFactoryMethods(): TestClassWithLongNameFactoryMethods
     {
         return new TestClassWithLongNameFactoryMethods('the-value');
@@ -54,5 +59,4 @@ readonly class TestFactory extends AbstractFactory
     {
         return new \spriebsch\TestClassWithLongNameFactoryMethods('the-value');
     }
-
 }

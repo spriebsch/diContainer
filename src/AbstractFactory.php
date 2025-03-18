@@ -42,12 +42,14 @@ abstract readonly class AbstractFactory
             $shortNameMethod = $type->shortNameMethod();
 
             if (method_exists($this, $shortNameMethod)) {
+                $this->ensureParameterCountMatches($shortNameMethod, $type);
                 return $this->$shortNameMethod(...$type->parameters());
             }
 
             $longNameMethod = $type->longNameMethod();
 
             if (method_exists($this, $longNameMethod)) {
+                $this->ensureParameterCountMatches($longNameMethod, $type);
                 return $this->$longNameMethod(...$type->parameters());
             }
 
@@ -124,6 +126,21 @@ abstract readonly class AbstractFactory
     {
         if (!$type->exists()) {
             throw ContainerException::typeDoesNotExist($type->type());
+        }
+    }
+
+    private function ensureParameterCountMatches(string $method, Type $type): void
+    {
+        $class = new ReflectionClass($this);
+        $method = $class->getMethod($method);
+        $parameters = $method->getParameters();
+
+        if (count($type->parameters()) > count($parameters)) {
+            throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
+        }
+
+        if (count($type->parameters()) < count($parameters)) {
+            throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
         }
     }
 }
