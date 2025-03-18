@@ -11,13 +11,13 @@ readonly class DelegateTestFactory extends AbstractFactory
         return new stdClass;
     }
 
-    public function DelegateTestClassWithShortNameFactoryMethod(): DelegateTestClassWithShortNameFactoryMethod
+    public function DelegateTestClassWithShortNameFactoryMethod(string $parameter): DelegateTestClassWithShortNameFactoryMethod
     {
-        return new DelegateTestClassWithShortNameFactoryMethod('the-value');
+        return new DelegateTestClassWithShortNameFactoryMethod($parameter);
     }
 
-    public function spriebsch_diContainer_DelegateTestClassWithLongNameFactoryMethod(): DelegateTestClassWithLongNameFactoryMethod
+    public function spriebsch_diContainer_DelegateTestClassWithLongNameFactoryMethod(string $parameter): DelegateTestClassWithLongNameFactoryMethod
     {
-        return new DelegateTestClassWithLongNameFactoryMethod('the-value');
+        return new DelegateTestClassWithLongNameFactoryMethod($parameter);
     }
 }

@@ -50,13 +50,13 @@ readonly class TestFactory extends AbstractFactory
         return new TestClassWithoutConstructorParametersAndShortMethod;
     }
 
-    public function spriebsch_diContainer_TestClassWithLongNameFactoryMethods(): TestClassWithLongNameFactoryMethods
+    public function spriebsch_diContainer_TestClassWithLongNameFactoryMethods(string $parameter): TestClassWithLongNameFactoryMethods
     {
-        return new TestClassWithLongNameFactoryMethods('the-value');
+        return new TestClassWithLongNameFactoryMethods($parameter);
     }
 
-    public function spriebsch_TestClassWithLongNameFactoryMethods(): \spriebsch\TestClassWithLongNameFactoryMethods
+    public function spriebsch_TestClassWithLongNameFactoryMethods(string $parameter): \spriebsch\TestClassWithLongNameFactoryMethods
     {
-        return new \spriebsch\TestClassWithLongNameFactoryMethods('the-value');
+        return new \spriebsch\TestClassWithLongNameFactoryMethods($parameter);
     }
 }

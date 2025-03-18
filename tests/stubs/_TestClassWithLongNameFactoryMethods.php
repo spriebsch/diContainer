@@ -4,5 +4,5 @@ namespace spriebsch;
 
 class TestClassWithLongNameFactoryMethods
 {
-    public function __construct(string $scalarParameter) {}
+    public function __construct(public readonly string $scalarParameter) {}
 }

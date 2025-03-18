@@ -217,7 +217,7 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf(
             TestClassWithLongNameFactoryMethods::class,
-            $container->get(TestClassWithLongNameFactoryMethods::class),
+            $container->get(TestClassWithLongNameFactoryMethods::class, 'the-value'),
         );
     }
 
@@ -281,7 +281,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function test_factory_can_be_cascaded(): void
+    public function test_factory_delegates_to_nested_factory(): void
     {
         $container = new DIContainer(
             new TestConfiguration,
@@ -296,12 +296,12 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf(
             DelegateTestClassWithLongNameFactoryMethod::class,
-            $container->get(DelegateTestClassWithLongNameFactoryMethod::class),
+            $container->get(DelegateTestClassWithLongNameFactoryMethod::class, 'the-value'),
         );
 
         $this->assertInstanceOf(
             DelegateTestClassWithShortNameFactoryMethod::class,
-            $container->get(DelegateTestClassWithShortNameFactoryMethod::class),
+            $container->get(DelegateTestClassWithShortNameFactoryMethod::class, 'the-value'),
         );
     }
 }
