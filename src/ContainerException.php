@@ -4,6 +4,7 @@ namespace spriebsch\diContainer;
 
 use Exception;
 use ReflectionMethod;
+use Throwable;
 
 class ContainerException extends Exception
 {
@@ -38,7 +39,7 @@ class ContainerException extends Exception
         return new self(sprintf('Type (class or interface) %s does not exist', $class));
     }
 
-    public static function exceptionWhileCreating(string $class, Exception $exception): self
+    public static function exceptionWhileCreating(string $class, Throwable $exception): self
     {
         return new self(
             sprintf(

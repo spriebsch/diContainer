@@ -4,6 +4,7 @@ namespace spriebsch\diContainer;
 
 use Exception;
 use ReflectionClass;
+use Throwable;
 
 abstract readonly class AbstractFactory
 {
@@ -78,7 +79,7 @@ abstract readonly class AbstractFactory
             }
 
             return $this->autoWire($type);
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             throw ContainerException::exceptionWhileCreating($type->type(), $exception);
         }
     }
@@ -90,7 +91,7 @@ abstract readonly class AbstractFactory
         $reflectionClass = new ReflectionClass($class);
         $constructor = $reflectionClass->getConstructor();
 
-        if (!$constructor) {
+        if ($constructor === null) {
             return new $class;
         }
 

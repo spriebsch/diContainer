@@ -25,9 +25,24 @@ final readonly class Type
         return $this->parameters;
     }
 
-    public function serialize(): string
+    public function serialize(Container $container): string
     {
-        return serialize($this);
+        $parameters = [];
+
+        foreach ($this->parameters() as $parameter) {
+            if (is_object($parameter)) {
+                $parameters[] = new Type($parameter::class);
+            } else {
+                $parameters[] = $parameter;
+            }
+        }
+
+        return serialize(
+            [
+                $this->type(),
+                $parameters
+            ]
+        );
     }
 
     public function exists(): bool

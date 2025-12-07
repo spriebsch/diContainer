@@ -3,6 +3,7 @@
 namespace spriebsch\diContainer;
 
 use ReflectionParameter;
+use Throwable;
 
 class AutoWireException extends ContainerException
 {
@@ -25,6 +26,20 @@ class AutoWireException extends ContainerException
                 $parameter->getName(),
                 $class,
             ),
+        );
+    }
+
+    public static function cannotCreate(string $class, ReflectionParameter $parameter, Throwable $exception): self
+    {
+        return new self(
+            sprintf(
+                'Cannot auto-wire %s: constructor parameter %s: %s',
+                $class,
+                $parameter->getName(),
+                $exception->getMessage()
+            ),
+            $exception->getCode(),
+            $exception
         );
     }
 }

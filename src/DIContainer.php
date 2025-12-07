@@ -35,16 +35,16 @@ final class DIContainer implements Container
             $this->add($type, $this->factory->create($type));
         }
 
-        return $this->instances[$type->serialize()];
+        return $this->instances[$type->serialize($this)];
     }
 
-    private function has(Type $type): bool
+    public function has(Type $type): bool
     {
-        return isset($this->instances[$type->serialize()]);
+        return isset($this->instances[$type->serialize($this)]);
     }
 
     private function add(Type $type, object $instance): void
     {
-        $this->instances[$type->serialize()] = $instance;
+        $this->instances[$type->serialize($this)] = $instance;
     }
 }
