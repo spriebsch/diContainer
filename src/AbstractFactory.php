@@ -165,6 +165,21 @@ abstract readonly class AbstractFactory
         $method = $class->getMethod($method);
         $parameters = $method->getParameters();
 
+        if (count($parameters) === 0) {
+
+            if (count($type->parameters()) > 0) {
+                throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
+            }
+
+            return;
+        }
+
+        $lastParameter = end($parameters);
+
+        if ($lastParameter->isVariadic()) {
+            return;
+        }
+
         if (count($type->parameters()) > count($parameters)) {
             throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
         }
