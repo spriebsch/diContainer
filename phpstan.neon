@@ -1,0 +1,18 @@
+parameters:
+  level: 10
+  paths:
+    - src
+    - tests
+  bootstrapFiles:
+    - /usr/local/bin/phpunit
+  excludePaths:
+    - src/autoload.php
+    - tests/autoload.php (?)
+  ignoreErrors:
+    -
+       messages:
+           - '#Constructor of class .* has an unused parameter#'
+           - '#Method .* has parameter .* with no type specified.#'
+           - '#Method .* has parameter .* with no value type specified in iterable type array.#'
+           - '#Method .* has no return type specified.#'
+       path: tests/stubs/*.php
