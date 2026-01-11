@@ -2,7 +2,7 @@
 
 namespace spriebsch\diContainer;
 
-class TestClassWithMultipleDependecies
+class TestClassWithMultipleDependencies
 {
     public function __construct(
         TestDependency             $testDependency,

@@ -144,7 +144,7 @@ abstract readonly class AbstractFactory
             $result = $this->$method(...$type->parameters());
 
             return $result;
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             throw ContainerException::exceptionWhileCreating($type->type(), $exception);
         }
     }
