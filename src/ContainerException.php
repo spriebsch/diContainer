@@ -63,6 +63,9 @@ class ContainerException extends Exception
         );
     }
 
+    /**
+     * @param \ReflectionParameter[] $parameters
+     */
     public static function numberOfArgumentsMismatch(Type $type, ReflectionMethod $method, array $parameters): self
     {
         return new self(

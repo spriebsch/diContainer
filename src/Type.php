@@ -7,6 +7,8 @@ use ReflectionClass;
 final readonly class Type
 {
     private string $type;
+
+    /** @var array<int|string, mixed> */
     private array $parameters;
 
     final public function __construct(string $type, mixed ...$parameters)
@@ -20,6 +22,9 @@ final readonly class Type
         return $this->type;
     }
 
+    /**
+     * @return array<int|string, mixed>
+     */
     public function parameters(): array
     {
         return $this->parameters;
@@ -61,7 +66,10 @@ final readonly class Type
             return null;
         }
 
-        return new ReflectionClass($this->type())->getShortName();
+        /** @var class-string $class */
+        $class = $this->type();
+
+        return (new ReflectionClass($class))->getShortName();
     }
 
     public function longNameMethod(): ?string

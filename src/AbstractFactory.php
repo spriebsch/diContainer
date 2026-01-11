@@ -34,6 +34,7 @@ abstract readonly class AbstractFactory
 
         $this->ensureIsObject($type->type(), $result);
 
+        /** @var object $result */
         return $result;
     }
 
@@ -86,6 +87,7 @@ abstract readonly class AbstractFactory
 
     private function autoWire(Type $type): object
     {
+        /** @var class-string $class */
         $class = $type->type();
 
         $reflectionClass = new ReflectionClass($class);
@@ -109,13 +111,15 @@ abstract readonly class AbstractFactory
                 throw AutoWireException::constructorParameterHasNoType($class, $parameter);
             }
 
+            /** @var \ReflectionNamedType $parameterType */
             $parameterType = $parameter->getType();
 
             if ($parameterType->isBuiltin()) {
                 throw AutoWireException::constructorParameterHasScalarType($class, $parameter);
             }
 
-            $dependency = (new ReflectionClass($parameterType->getName()))->getName();
+            /** @var class-string $dependency */
+            $dependency = $parameterType->getName();
 
             $dependencies[] = $this->container->get($dependency);
         }

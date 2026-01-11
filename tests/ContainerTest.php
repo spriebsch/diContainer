@@ -256,6 +256,7 @@ class ContainerTest extends TestCase
         $parameter = 'the-parameter';
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
+        /** @var TestClassVirtualTypeWithParameter $object */
         $object = $container->get('virtualTypeWithParameter', $parameter);
 
         $this->assertSame($parameter, $object->parameter);

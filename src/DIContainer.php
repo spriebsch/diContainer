@@ -5,11 +5,15 @@ namespace spriebsch\diContainer;
 final class DIContainer implements Container
 {
     public readonly AbstractFactory $factory;
+
+    /** @var array<string, object> */
     private array $instances = [];
 
     final public function __construct(Configuration $configuration, string ...$factoryClasses)
     {
         $previous = null;
+
+        $factory = null;
 
         foreach (array_reverse($factoryClasses) as $factoryClass) {
             if (!class_exists($factoryClass, true)) {
@@ -22,6 +26,10 @@ final class DIContainer implements Container
 
             $factory = new $factoryClass($configuration, $this, $previous);
             $previous = $factory;
+        }
+
+        if ($factory === null) {
+            throw ContainerException::exceptionWhileCreating('DIContainer', new \RuntimeException('No factory classes provided'));
         }
 
         $this->factory = $factory;
