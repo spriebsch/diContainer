@@ -118,7 +118,7 @@ class AdditionalContainerTest extends TestCase
 
         $this->assertInstanceOf(TestClassWithoutConstructor::class, $instance);
     }
-    
+
     public function test_exception_when_too_few_arguments_passed_to_regular_factory_method(): void
     {
         $container = new DIContainer(new TestConfiguration(), TestFactory::class);
