@@ -1,6 +1,6 @@
 # DI Container
 
-A lightweight, smart and fast Dependency Injection (DI) container with auto-wiring, supporting custom factories and virtual types.
+A lightweight, smart and fast Dependency Injection (DI) container with auto-wiring, supporting custom factories and virtual types. It follows an "as modular as possible" approach and requires no separate build or compilation step.
 
 ## Installation
 
