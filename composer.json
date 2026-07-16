@@ -31,6 +31,9 @@
     "php": "^8.5"
   },
   "scripts": {
-    "clean": "rm -rf build/*"
+    "clean": "rm -rf build/*",
+    "fix-phpstorm": [
+      "if [ ! -f \"phpunit.phar\" ]; then cp /usr/local/bin/phpunit phpunit.phar; fi"
+    ]
   }
 }
