@@ -282,6 +282,16 @@ class ContainerTest extends TestCase
         );
     }
 
+    public function test_creates_new_instance_of_types_for_different_parameters(): void
+    {
+        $container = new DIContainer(new TestConfiguration, TestFactory::class);
+
+        $this->assertNotSame(
+            $container->get(TestClassWithScalarConstructorParametersAndShortMethod::class, 'one', 1, []),
+            $container->get(TestClassWithScalarConstructorParametersAndShortMethod::class, 'two', 2, []),
+        );
+    }
+
     public function test_factory_delegates_to_nested_factory(): void
     {
         $container = new DIContainer(
