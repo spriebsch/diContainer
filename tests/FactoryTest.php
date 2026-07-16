@@ -31,7 +31,7 @@ final class FactoryTest extends TestCase
         };
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('Type (class or interface) SomeClass does not exist');
+        $this->expectExceptionMessageIsOrContains('Type (class or interface) SomeClass does not exist');
 
         $factory->create($type);
     }

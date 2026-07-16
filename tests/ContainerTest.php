@@ -17,7 +17,7 @@ class ContainerTest extends TestCase
     public function test_exception_when_factory_class_does_not_exist(): void
     {
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('Factory class does-not-exist does not exist');
+        $this->expectExceptionMessageIsOrContains('Factory class does-not-exist does not exist');
 
         new DIContainer(new TestConfiguration, 'does-not-exist');
     }
@@ -25,7 +25,7 @@ class ContainerTest extends TestCase
     public function test_exception_when_factory_class_does_not_extend_abstract_factory(): void
     {
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('is no instance of');
+        $this->expectExceptionMessageIsOrContains('is no instance of');
 
         new DIContainer(
             new TestConfiguration,
@@ -38,7 +38,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('has scalar type');
+        $this->expectExceptionMessageIsOrContains('has scalar type');
 
         $container->get(TestClassWithScalarConstructorParameters::class);
     }
@@ -48,7 +48,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('Factory method for virtual type does-not-exist does not exist');
+        $this->expectExceptionMessageIsOrContains('Factory method for virtual type does-not-exist does not exist');
 
         $container->get('does-not-exist');
     }
@@ -58,7 +58,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        // $this->expectExceptionMessage('class\\DoesNotExist does not exist');
+        // $this->expectExceptionMessageIsOrContains('class\\DoesNotExist does not exist');
 
         $container->get('class\\DoesNotExist');
     }
@@ -68,7 +68,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('constructor parameter untypedParameter');
+        $this->expectExceptionMessageIsOrContains('constructor parameter untypedParameter');
 
         $container->get(TestClassWithDependencyThatHasUntypedConstructorParameter::class);
     }
@@ -78,7 +78,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('does not return object but');
+        $this->expectExceptionMessageIsOrContains('does not return object but');
 
         $container->get('TypeThatDoesNotReturnObject');
     }
@@ -171,7 +171,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIsOrContains(
             'Type spriebsch\diContainer\TestClassWithoutConstructorParametersAndShortMethod has 1 parameter(s)',
         );
 
@@ -186,7 +186,7 @@ class ContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration, TestFactory::class);
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIsOrContains(
             'Type spriebsch\diContainer\TestClassWithScalarConstructorParametersAndShortMethod has 1 parameter(s)',
         );
 
