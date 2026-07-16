@@ -1,12 +1,11 @@
 {
   "name": "spriebsch/di",
-  "description": "A lightweight, smart and fast DI container.",
+  "description": "A lightweight, smart and fast DI container with autowiring.",
   "authors": [
     {
       "name": "Stefan Priebsch",
       "email": "stefan@priebsch.de",
-      "homepage": "https://priebsch.de",
-      "role": "Developer"
+      "homepage": "https://software-success-consultant.com"
     }
   ],
   "license": "BSD-3-Clause",
@@ -15,47 +14,23 @@
       "src"
     ]
   },
+  "autoload-dev": {
+    "classmap": [
+      "tests"
+    ]
+  },
   "config": {
     "platform": {
-      "php": "8.4"
+      "php": "8.5"
     },
     "optimize-autoloader": true,
     "sort-packages": true
   },
   "prefer-stable": true,
   "require": {
-    "php": "^8.4",
-    "ext-sqlite3": "*"
+    "php": "^8.5"
   },
   "scripts": {
-    "post-autoload-dump": "@generate-autoloader",
-    "generate-autoloader": [
-      "tools/phpab --basedir src --output src/autoload.php composer.json",
-      "tools/phpab --output tests/autoload.php tests"
-    ],
-    "clean": "rm -rf build/*",
-    "test": [
-      "tools/phpunit"
-    ],
-    "mutation-test": [
-      "rm build/infection.log",
-      "tools/infection"
-    ],
-    "code-coverage": [
-      "rm -rf build/code-coverage",
-      "@putenv XDEBUG_MODE=coverage",
-      "tools/phpunit --coverage-html build/code-coverage"
-    ],
-    "path-coverage": [
-      "rm -rf build/code-coverage",
-      "@putenv XDEBUG_MODE=coverage",
-      "tools/phpunit --coverage-html build/code-coverage --path-coverage"
-    ],
-    "show-coverage": "gio open build/code-coverage/index.html",
-    "update-tools": [
-      "rm tools/phpunit.phar",
-      "phive update",
-      "ln -s phpunit tools/phpunit.phar"
-    ]
+    "clean": "rm -rf build/*"
   }
 }

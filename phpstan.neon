@@ -1,13 +1,10 @@
 parameters:
-  level: 10
+  level: max
   paths:
     - src
     - tests
   bootstrapFiles:
     - /usr/local/bin/phpunit
-  excludePaths:
-    - src/autoload.php
-    - tests/autoload.php (?)
   ignoreErrors:
     -
        messages:

@@ -89,7 +89,11 @@ class AdditionalContainerTest extends TestCase
         // We can at least test that the method works as expected.
         $exception = new Exception('original', 123);
         $reflection = new \ReflectionClass(TestClassWithScalarConstructorParameters::class);
-        $parameter = $reflection->getConstructor()->getParameters()[0];
+        $constructor = $reflection->getConstructor();
+        if ($constructor === null) {
+            $this->fail('Test class should have a constructor');
+        }
+        $parameter = $constructor->getParameters()[0];
 
         $autoWireException = AutoWireException::cannotCreate('SomeClass', $parameter, $exception);
 
@@ -157,5 +161,61 @@ class AdditionalContainerTest extends TestCase
     {
         $exception = ContainerException::typeDoesNotExist('DoesNotExist');
         $this->assertSame('Type (class or interface) DoesNotExist does not exist', $exception->getMessage());
+    }
+
+    public function test_exception_when_method_expects_zero_parameters_but_parameters_given(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Type spriebsch\diContainer\TestClassWithoutConstructorParametersAndShortMethod has 1 parameter(s), method TestClassWithoutConstructorParametersAndShortMethod expects 0');
+
+        $container->get(TestClassWithoutConstructorParametersAndShortMethod::class, 'unexpected');
+    }
+
+    public function test_exception_when_method_expects_more_parameters_than_given(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Type spriebsch\diContainer\TestClassWithScalarConstructorParametersAndShortMethod has 1 parameter(s), method TestClassWithScalarConstructorParametersAndShortMethod expects 3');
+
+        $container->get(TestClassWithScalarConstructorParametersAndShortMethod::class, 'only-one');
+    }
+
+    public function test_autowire_exception_constructor_parameter_has_no_type(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Exception "Cannot auto-wire: constructor parameter untypedParameter of spriebsch\diContainer\DependencyThatHasUntypedConstructorParameter has no type" while creating spriebsch\diContainer\DependencyThatHasUntypedConstructorParameter');
+
+        $container->get(DependencyThatHasUntypedConstructorParameter::class);
+    }
+
+    public function test_exception_when_method_expects_fewer_parameters_than_given(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Type spriebsch\diContainer\TestClassWithShortNameFactoryMethod has 2 parameter(s), method TestClassWithShortNameFactoryMethod expects 1');
+
+        $container->get(TestClassWithShortNameFactoryMethod::class, 'param1', 'param2');
+    }
+
+    public function test_exception_when_factory_class_is_no_instance_of_abstract_factory(): void
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Factory spriebsch\diContainer\TestFactoryThatDoesNotExtendAbstractFactory is no instance of spriebsch\diContainer\AbstractFactory');
+
+        new DIContainer(new TestConfiguration(), TestFactoryThatDoesNotExtendAbstractFactory::class);
+    }
+
+    public function test_exception_when_factory_class_does_not_exist(): void
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Factory class DoesNotExist does not exist');
+
+        new DIContainer(new TestConfiguration(), 'DoesNotExist');
     }
 }

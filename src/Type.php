@@ -4,7 +4,7 @@ namespace spriebsch\diContainer;
 
 use ReflectionClass;
 
-final readonly class Type
+readonly class Type
 {
     private string $type;
 
@@ -62,7 +62,7 @@ final readonly class Type
 
     public function shortNameMethod(): ?string
     {
-        if ($this->isVirtual()) {
+        if ($this->isVirtual() || !$this->exists()) {
             return null;
         }
 
