@@ -29,7 +29,9 @@ class AdditionalContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessageIsOrContains('Exception "Regular method exception" while creating throwingMethod');
 
-        $container->get('throwingMethod');
+        /** @var class-string $type */
+        $type = 'throwingMethod';
+        $container->get($type);
     }
 
     public function test_exception_when_virtual_type_factory_method_throws_exception(): void
@@ -39,7 +41,9 @@ class AdditionalContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessageIsOrContains('Exception "Virtual type exception" while creating throwingVirtualType');
 
-        $container->get('throwingVirtualType');
+        /** @var class-string $type */
+        $type = 'throwingVirtualType';
+        $container->get($type);
     }
 
     public function test_exception_when_virtual_type_factory_method_throws_error(): void
@@ -49,7 +53,9 @@ class AdditionalContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessageIsOrContains('Error');
 
-        $container->get('throwingErrorVirtualType');
+        /** @var class-string $type */
+        $type = 'throwingErrorVirtualType';
+        $container->get($type);
     }
 
     public function test_exception_when_factory_method_does_not_return_object(): void
@@ -59,14 +65,18 @@ class AdditionalContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessageIsOrContains('Factory method nonObjectMethod does not return object but string');
 
-        $container->get('nonObjectMethod');
+        /** @var class-string $type */
+        $type = 'nonObjectMethod';
+        $container->get($type);
     }
 
     public function test_variadic_factory_method(): void
     {
         $container = new DIContainer(new TestConfiguration(), TestFactoryWithErrors::class);
 
-        $instance = $container->get('variadicMethod', 'a', 'b', 'c');
+        /** @var class-string $type */
+        $type = 'variadicMethod';
+        $instance = $container->get($type, 'a', 'b', 'c');
 
         $this->assertInstanceOf(stdClass::class, $instance);
     }
@@ -76,9 +86,12 @@ class AdditionalContainerTest extends TestCase
         $container = new DIContainer(new TestConfiguration(), TestFactoryWithErrors::class);
         $object = new stdClass();
 
+        /** @var class-string $type */
+        $type = 'variadicMethod';
+
         // Use variadicMethod which accepts anything
-        $instance1 = $container->get('variadicMethod', $object);
-        $instance2 = $container->get('variadicMethod', $object);
+        $instance1 = $container->get($type, $object);
+        $instance2 = $container->get($type, $object);
 
         $this->assertSame($instance1, $instance2);
     }
@@ -154,7 +167,9 @@ class AdditionalContainerTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessageIsOrContains('Factory method for virtual type DoesNotExist does not exist');
 
-        $container->get('DoesNotExist');
+        /** @var class-string $type */
+        $type = 'DoesNotExist';
+        $container->get($type);
     }
 
     public function test_container_exception_type_does_not_exist(): void

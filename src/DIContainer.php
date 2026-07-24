@@ -35,14 +35,23 @@ final class DIContainer implements Container
         $this->factory = $factory;
     }
 
+    /**
+     * @template T of object
+     * @param class-string<T> $type
+     * @param mixed ...$parameters
+     * @return T
+     */
     final public function get(string $type, mixed ...$parameters): object
     {
-        $type = new Type($type, ...$parameters);
+        /** @var class-string $typeString */
+        $typeString = $type;
+        $type = new Type($typeString, ...$parameters);
 
         if (!$this->has($type)) {
             $this->add($type, $this->factory->create($type));
         }
 
+        /** @var T */
         return $this->instances[$type->serialize($this)];
     }
 

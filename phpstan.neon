@@ -6,6 +6,8 @@ parameters:
   bootstrapFiles:
     - /usr/local/bin/phpunit
   ignoreErrors:
+    - '#Parameter \#1 \$type of method spriebsch\\diContainer\\DIContainer::get\(\) expects class-string<.*>, string given\.#'
+    - '#PHPDoc tag @var with type class-string is not subtype of native type .*#'
     -
        messages:
            - '#Constructor of class .* has an unused parameter#'

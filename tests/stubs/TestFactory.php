@@ -59,4 +59,9 @@ readonly class TestFactory extends AbstractFactory
     {
         return new \spriebsch\TestClassWithLongNameFactoryMethods($parameter);
     }
+
+    public function ChildClassInheritingConstructor(string $parameter): ChildClassInheritingConstructor
+    {
+        return new ChildClassInheritingConstructor($parameter);
+    }
 }

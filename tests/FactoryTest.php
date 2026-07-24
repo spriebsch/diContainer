@@ -9,8 +9,18 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Type::class)]
 #[CoversClass(ContainerException::class)]
 #[CoversClass(DIContainer::class)]
+#[CoversClass(AutoWireException::class)]
 final class FactoryTest extends TestCase
 {
+    public function test_inherited_constructor_has_one_parameter(): void
+    {
+        $reflectionClass = new \ReflectionClass(ChildClassInheritingConstructor::class);
+        $constructor = $reflectionClass->getConstructor();
+
+        $this->assertNotNull($constructor);
+        $this->assertSame(1, count($constructor->getParameters()));
+    }
+
     public function test_exception_when_type_is_not_virtual_but_does_not_exist(): void
     {
         $configuration = new TestConfiguration();

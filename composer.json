@@ -28,7 +28,8 @@
   },
   "prefer-stable": true,
   "require": {
-    "php": "^8.5"
+    "php": "^8.5",
+    "ext-sqlite3": "*"
   },
   "scripts": {
     "clean": "rm -rf build/*",

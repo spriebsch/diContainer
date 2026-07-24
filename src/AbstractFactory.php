@@ -85,6 +85,47 @@ abstract readonly class AbstractFactory
         }
     }
 
+    private function ensureParameterCountMatches(string $method, Type $type): void
+    {
+        $class = new ReflectionClass($this);
+        $method = $class->getMethod($method);
+        $parameters = $method->getParameters();
+
+        if (count($parameters) === 0) {
+
+            if (count($type->parameters()) > 0) {
+                throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
+            }
+
+            return;
+        }
+
+        $requiredParameters = 0;
+        foreach ($parameters as $parameter) {
+            if (!$parameter->isOptional()) {
+                $requiredParameters++;
+            }
+        }
+
+        $lastParameter = end($parameters);
+
+        if ($lastParameter->isVariadic()) {
+            if (count($type->parameters()) < $requiredParameters) {
+                throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
+            }
+
+            return;
+        }
+
+        if (count($type->parameters()) > count($parameters)) {
+            throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
+        }
+
+        if (count($type->parameters()) < $requiredParameters) {
+            throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
+        }
+    }
+
     private function autoWire(Type $type): object
     {
         /** @var class-string $class */
@@ -160,36 +201,6 @@ abstract readonly class AbstractFactory
     {
         if (!$type->exists()) {
             throw ContainerException::typeDoesNotExist($type->type());
-        }
-    }
-
-    private function ensureParameterCountMatches(string $method, Type $type): void
-    {
-        $class = new ReflectionClass($this);
-        $method = $class->getMethod($method);
-        $parameters = $method->getParameters();
-
-        if (count($parameters) === 0) {
-
-            if (count($type->parameters()) > 0) {
-                throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
-            }
-
-            return;
-        }
-
-        $lastParameter = end($parameters);
-
-        if ($lastParameter->isVariadic()) {
-            return;
-        }
-
-        if (count($type->parameters()) > count($parameters)) {
-            throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
-        }
-
-        if (count($type->parameters()) < count($parameters)) {
-            throw ContainerException::numberOfArgumentsMismatch($type, $method, $parameters);
         }
     }
 }

@@ -315,4 +315,14 @@ class ContainerTest extends TestCase
             $container->get(DelegateTestClassWithShortNameFactoryMethod::class, 'the-value'),
         );
     }
+
+    public function test_handles_inherited_constructor(): void
+    {
+        $configuration = new TestConfiguration();
+        $container = new DIContainer($configuration, TestFactory::class);
+
+        $object = $container->get(ChildClassInheritingConstructor::class, 'the-value');
+
+        $this->assertInstanceOf(ChildClassInheritingConstructor::class, $object);
+    }
 }
