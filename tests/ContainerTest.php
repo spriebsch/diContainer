@@ -316,6 +316,16 @@ class ContainerTest extends TestCase
         );
     }
 
+    public function test_exception_when_auto_wiring_interface(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactory::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Cannot auto-wire: spriebsch\diContainer\TestInterface is an interface');
+
+        $container->get(TestInterface::class);
+    }
+
     public function test_handles_inherited_constructor(): void
     {
         $configuration = new TestConfiguration();

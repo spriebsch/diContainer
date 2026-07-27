@@ -42,4 +42,14 @@ class AutoWireException extends ContainerException
             $exception
         );
     }
+
+    public static function cannotAutoWireInterface(string $interface): self
+    {
+        return new self(
+            sprintf(
+                'Cannot auto-wire: %s is an interface',
+                $interface,
+            ),
+        );
+    }
 }

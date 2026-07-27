@@ -132,6 +132,11 @@ abstract readonly class AbstractFactory
         $class = $type->type();
 
         $reflectionClass = new ReflectionClass($class);
+
+        if ($reflectionClass->isInterface()) {
+            throw AutoWireException::cannotAutoWireInterface($class);
+        }
+
         $constructor = $reflectionClass->getConstructor();
 
         if ($constructor === null) {
