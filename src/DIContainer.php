@@ -2,6 +2,8 @@
 
 namespace spriebsch\diContainer;
 
+use Throwable;
+
 final class DIContainer implements Container
 {
     public readonly AbstractFactory $factory;
@@ -48,7 +50,13 @@ final class DIContainer implements Container
         $type = new Type($typeString, ...$parameters);
 
         if (!$this->has($type)) {
-            $this->add($type, $this->factory->create($type));
+            try {
+                $instance = $this->factory->create($type);
+            } catch (Throwable $exception) {
+                throw ContainerException::cannotCreateType($type->type(), $exception);
+            }
+
+            $this->add($type, $instance);
         }
 
         /** @var T */

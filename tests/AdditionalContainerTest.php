@@ -34,6 +34,34 @@ class AdditionalContainerTest extends TestCase
         $container->get($type);
     }
 
+    public function test_exception_identifies_type_the_container_tried_to_create(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactoryWithErrors::class);
+
+        $this->expectExceptionMessage('Cannot create type throwingMethod: Exception "Regular method exception" while creating throwingMethod');
+
+        /** @var class-string $type */
+        $type = 'throwingMethod';
+        $container->get($type);
+    }
+
+    public function test_exception_chains_factory_exception(): void
+    {
+        $container = new DIContainer(new TestConfiguration(), TestFactoryWithErrors::class);
+
+        try {
+            /** @var class-string $type */
+            $type = 'throwingMethod';
+            $container->get($type);
+        } catch (ContainerException $exception) {
+            $this->assertSame('Exception "Regular method exception" while creating throwingMethod', $exception->getPrevious()?->getMessage());
+
+            return;
+        }
+
+        $this->fail('Expected a ContainerException');
+    }
+
     public function test_exception_when_virtual_type_factory_method_throws_exception(): void
     {
         $container = new DIContainer(new TestConfiguration(), TestFactoryWithErrors::class);

@@ -8,6 +8,19 @@ use Throwable;
 
 class ContainerException extends Exception
 {
+    public static function cannotCreateType(string $type, Throwable $exception): self
+    {
+        return new self(
+            sprintf(
+                'Cannot create type %s: %s',
+                $type,
+                $exception->getMessage(),
+            ),
+            0,
+            $exception,
+        );
+    }
+
     public static function factoryClassDoesNotExist(string $factoryClass): self
     {
         return new self(
